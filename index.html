@@ -37,9 +37,7 @@
 
   <h2>Wybierz produkty i ilość</h2>
   <div class="item-list mb-3">
-    <div class="form-check" id="menuItems">
-      <!-- Items will be inserted by JS -->
-    </div>
+    <div class="form-check" id="menuItems"></div>
   </div>
 
   <div class="mb-3">
@@ -163,15 +161,24 @@ function oblicz() {
     suma += ilosc * p.kcal;
   });
 
-  const kmNaSpalenie = (suma / (waga * 0.9)).toFixed(2);
+  const kmSpacer = (suma / (waga * 0.9)).toFixed(2);
+  const kmBieg = (suma / (waga * 1.2)).toFixed(2);
+  const kmRower = (suma / (waga * 1.6)).toFixed(2);
+  const kmPlywanie = (suma / (waga * 1.3)).toFixed(2);
+  const godzSilownia = (suma / (waga * 5)).toFixed(2);
 
   document.getElementById("wyniki").style.display = "block";
   document.getElementById("wyniki").innerHTML = `
     <strong>Zjadłeś:</strong> ${suma} kcal<br>
     <strong>Twoje dzienne zapotrzebowanie (utrzymanie):</strong> ${zapotrzebowanie} kcal<br>
     <strong>Dla redukcji:</strong> ${redukcja} kcal<br>
-    <strong>Dla zwiększenia masy:</strong> ${masa} kcal<br>
-    <strong>Musisz przejść około:</strong> ${kmNaSpalenie} km, aby to spalić.`;
+    <strong>Dla zwiększenia masy:</strong> ${masa} kcal<br><br>
+    <strong>Aby to spalić musiałbyś:</strong><br>
+    🚶 Przejść: ${kmSpacer} km<br>
+    🏃 Przebiec: ${kmBieg} km<br>
+    🚴 Przejechać rowerem: ${kmRower} km<br>
+    🏊 Przepłynąć: ${kmPlywanie} km<br>
+    🏋️ Ćwiczyć siłowo: ${godzSilownia} godz.`;
 }
 </script>
 </body>
