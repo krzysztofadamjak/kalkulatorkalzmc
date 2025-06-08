@@ -88,6 +88,10 @@ const produkty = [
   { nazwa: "McDouble", kcal: 400 },
   { nazwa: "McWrap Klasyczny Chrupiący Kurczak", kcal: 570 },
   { nazwa: "McWrap Bekon DeLuxe Chrupiący Kurczak", kcal: 675 },
+  { nazwa: "McWrap Tzatziki Kurczak", kcal: 864 },
+  { nazwa: "McWrap Tzatziki Falafel", kcal: 770 },
+  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (burger)", kcal: 990 },
+  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (wrap)", kcal: 936 },
   { nazwa: "Frytki małe", kcal: 230 },
   { nazwa: "Frytki średnie", kcal: 330 },
   { nazwa: "Frytki duże", kcal: 432 },
@@ -103,12 +107,20 @@ const produkty = [
   { nazwa: "Burger Drwala na ostro", kcal: 887 },
   { nazwa: "Burger Drwala z żurawiną", kcal: 928 },
   { nazwa: "Burger Drwala podwójny", kcal: 1130 },
-  { nazwa: "McWrap Tzatziki Kurczak", kcal: 864 },
-  { nazwa: "McWrap Tzatziki Falafel", kcal: 770 },
-  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (burger)", kcal: 990 },
-  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (wrap)", kcal: 936 },
   { nazwa: "McFlurry Oreo", kcal: 490 },
-  { nazwa: "Coca-Cola 0.5l", kcal: 210 }
+  { nazwa: "Coca-Cola 0.5l", kcal: 210 },
+  { nazwa: "Coca-Cola Zero 0.5l", kcal: 1 },
+  { nazwa: "Fanta 0.5l", kcal: 205 },
+  { nazwa: "Sprite 0.5l", kcal: 185 },
+  { nazwa: "Woda mineralna 0.5l", kcal: 0 },
+  { nazwa: "Kawa czarna", kcal: 5 },
+  { nazwa: "Kawa z mlekiem", kcal: 40 },
+  { nazwa: "Herbata", kcal: 2 },
+  { nazwa: "Sok pomarańczowy 0.3l", kcal: 135 },
+  { nazwa: "Sok jabłkowy 0.3l", kcal: 132 },
+  { nazwa: "Shake waniliowy mały", kcal: 245 },
+  { nazwa: "Shake truskawkowy mały", kcal: 248 },
+  { nazwa: "Shake czekoladowy mały", kcal: 270 }
 ];
 
 const lista = document.getElementById("menuItems");
@@ -142,6 +154,8 @@ function oblicz() {
     bmr = 10 * waga + 6.25 * wzrost - 5 * 30 - 161;
   }
   const zapotrzebowanie = Math.round(bmr * aktywnosc);
+  const redukcja = Math.round(zapotrzebowanie * 0.8);
+  const masa = Math.round(zapotrzebowanie * 1.1);
 
   let suma = 0;
   produkty.forEach((p, i) => {
@@ -154,7 +168,9 @@ function oblicz() {
   document.getElementById("wyniki").style.display = "block";
   document.getElementById("wyniki").innerHTML = `
     <strong>Zjadłeś:</strong> ${suma} kcal<br>
-    <strong>Twoje dzienne zapotrzebowanie:</strong> ${zapotrzebowanie} kcal<br>
+    <strong>Twoje dzienne zapotrzebowanie (utrzymanie):</strong> ${zapotrzebowanie} kcal<br>
+    <strong>Dla redukcji:</strong> ${redukcja} kcal<br>
+    <strong>Dla zwiększenia masy:</strong> ${masa} kcal<br>
     <strong>Musisz przejść około:</strong> ${kmNaSpalenie} km, aby to spalić.`;
 }
 </script>
