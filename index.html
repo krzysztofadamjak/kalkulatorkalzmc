@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Licznik kalorii McDonald's</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .item-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .form-control-sm {
+      width: 80px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>McDonald's Licznik Kalorii</h1>
+
+  <h2>Wybierz produkty i ilość</h2>
+  <div class="item-list mb-3">
+    <div class="form-check" id="menuItems">
+      <!-- Items will be inserted by JS -->
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="waga" class="form-label">Waga (kg)</label>
+    <input type="number" class="form-control" id="waga">
+  </div>
+  <div class="mb-3">
+    <label for="wzrost" class="form-label">Wzrost (cm)</label>
+    <input type="number" class="form-control" id="wzrost">
+  </div>
+  <div class="mb-3">
+    <label for="plec" class="form-label">Płeć</label>
+    <select class="form-select" id="plec">
+      <option value="m">Mężczyzna</option>
+      <option value="k">Kobieta</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="aktywność" class="form-label">Tryb życia</label>
+    <select class="form-select" id="aktywnosc">
+      <option value="1.2">Siedzący</option>
+      <option value="1.375">Umiarkowany ruch</option>
+      <option value="1.55">Aktywny</option>
+      <option value="1.725">Bardzo aktywny</option>
+    </select>
+  </div>
+
+  <button class="btn btn-primary w-100 mb-3" onclick="oblicz()">Oblicz</button>
+
+  <div id="wyniki" class="alert alert-info" style="display: none;"></div>
+</div>
+
+<script>
+const produkty = [
+  { nazwa: "Hamburger", kcal: 255 },
+  { nazwa: "Cheeseburger", kcal: 304 },
+  { nazwa: "Big Mac", kcal: 526 },
+  { nazwa: "McRoyal", kcal: 534 },
+  { nazwa: "Podwójny McRoyal", kcal: 779 },
+  { nazwa: "WieśMac", kcal: 594 },
+  { nazwa: "Podwójny WieśMac", kcal: 950 },
+  { nazwa: "McChicken", kcal: 430 },
+  { nazwa: "Jalapeño Burger", kcal: 300 },
+  { nazwa: "Chikker", kcal: 416 },
+  { nazwa: "Red Chikker", kcal: 340 },
+  { nazwa: "McDouble", kcal: 400 },
+  { nazwa: "McWrap Klasyczny Chrupiący Kurczak", kcal: 570 },
+  { nazwa: "McWrap Bekon DeLuxe Chrupiący Kurczak", kcal: 675 },
+  { nazwa: "Frytki małe", kcal: 230 },
+  { nazwa: "Frytki średnie", kcal: 330 },
+  { nazwa: "Frytki duże", kcal: 432 },
+  { nazwa: "Nuggetsy (4 szt.)", kcal: 175 },
+  { nazwa: "Nuggetsy (6 szt.)", kcal: 265 },
+  { nazwa: "Sałatka podstawowa", kcal: 39 },
+  { nazwa: "Sałatka Kurczak Premium", kcal: 323 },
+  { nazwa: "Sos 1000 wysp", kcal: 83 },
+  { nazwa: "Sos winegret", kcal: 187 },
+  { nazwa: "Sos jogurtowo‑koperkowy", kcal: 26 },
+  { nazwa: "Burger Drwala (klasyczny)", kcal: 894 },
+  { nazwa: "Burger Drwala z kurczakiem", kcal: 861 },
+  { nazwa: "Burger Drwala na ostro", kcal: 887 },
+  { nazwa: "Burger Drwala z żurawiną", kcal: 928 },
+  { nazwa: "Burger Drwala podwójny", kcal: 1130 },
+  { nazwa: "McWrap Tzatziki Kurczak", kcal: 864 },
+  { nazwa: "McWrap Tzatziki Falafel", kcal: 770 },
+  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (burger)", kcal: 990 },
+  { nazwa: "Supreme Crispy Chicken Sweet & Spicy (wrap)", kcal: 936 },
+  { nazwa: "McFlurry Oreo", kcal: 490 },
+  { nazwa: "Coca-Cola 0.5l", kcal: 210 }
+];
+
+const lista = document.getElementById("menuItems");
+produkty.forEach((produkt, i) => {
+  lista.innerHTML += `
+    <div class="row align-items-center mb-2">
+      <div class="col-8">
+        <label>${produkt.nazwa} - ${produkt.kcal} kcal</label>
+      </div>
+      <div class="col-4">
+        <input type="number" class="form-control form-control-sm" min="0" value="0" id="qty${i}">
+      </div>
+    </div>`;
+});
+
+function oblicz() {
+  const waga = parseFloat(document.getElementById("waga").value);
+  const wzrost = parseFloat(document.getElementById("wzrost").value);
+  const plec = document.getElementById("plec").value;
+  const aktywnosc = parseFloat(document.getElementById("aktywnosc").value);
+
+  if (!waga || !wzrost) {
+    alert("Wprowadź poprawne dane.");
+    return;
+  }
+
+  let bmr = 0;
+  if (plec === "m") {
+    bmr = 10 * waga + 6.25 * wzrost - 5 * 30 + 5;
+  } else {
+    bmr = 10 * waga + 6.25 * wzrost - 5 * 30 - 161;
+  }
+  const zapotrzebowanie = Math.round(bmr * aktywnosc);
+
+  let suma = 0;
+  produkty.forEach((p, i) => {
+    const ilosc = parseInt(document.getElementById(`qty${i}`).value) || 0;
+    suma += ilosc * p.kcal;
+  });
+
+  const kmNaSpalenie = (suma / (waga * 0.9)).toFixed(2);
+
+  document.getElementById("wyniki").style.display = "block";
+  document.getElementById("wyniki").innerHTML = `
+    <strong>Zjadłeś:</strong> ${suma} kcal<br>
+    <strong>Twoje dzienne zapotrzebowanie:</strong> ${zapotrzebowanie} kcal<br>
+    <strong>Musisz przejść około:</strong> ${kmNaSpalenie} km, aby to spalić.`;
+}
+</script>
+</body>
+</html>
